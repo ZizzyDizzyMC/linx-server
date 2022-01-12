@@ -9,6 +9,19 @@
 	<link href='{{ sitepath }}static/css/hint.css' rel='stylesheet' type='text/css'>
 	<link href='{{ sitepath }}static/images/favicon.gif' rel='icon' type='image/gif'>
 	{% block head %}{% endblock %}
+	<meta name="og:site_name" content="{{ sitename }}" />
+	<meta name="twitter:site" content="{{ sitename }}" />
+
+	{% block opengraph %}
+	<meta property="og:title" content="{{ sitename }}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="{{ siteurl }}{{ sitepath }}{{ filename }}" />
+	{% endblock %}
+
+	{% block twittercard %}
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{ sitename }}" />
+	{% endblock %}
 </head>
 
 <body>
