@@ -2,6 +2,17 @@
 
 {% block title %}{{sitename}} - API{% endblock %}
 
+{% block opengraph %}
+<meta property="og:title" content="{{ sitename }} - API" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ siteurl }}{{ sitepath }}{{ filename }}" />
+{% endblock %}
+
+{% block twittercard %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{{ sitename }} - API" />
+{% endblock %}
+
 {% block head %}
 <link href="{{ sitepath }}static/css/github-markdown.css" rel="stylesheet" type="text/css">
 {% endblock %}

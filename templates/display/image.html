@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
-{% block head %}
-<meta name="twitter:card" content="summary_large_image">
+{% block opengraph %}
 <meta property="og:image" content="{{ siteurl }}{{ sitepath }}{{ selifpath }}{{ filename }}" />
+{% endblock %}
+
+{% block twittercard %}
+<meta name="twitter:image" content="{{ siteurl }}{{ sitepath }}{{ selifpath }}{{ filename }}" />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:text:title" content="{{ filename }} ({{ size }})" />
 {% endblock %}
 
 {% block main %}
