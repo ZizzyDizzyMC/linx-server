@@ -3,10 +3,6 @@ linx-server
 
 Self-hosted file/media sharing website.  
 
-### Demo
-You can see what it looks like using the demo: [https://put.icu/](https://put.icu/)
-
-
 ### Clients
 **Official**
 - CLI: **linx-client** - [Source](https://github.com/andreimarcu/linx-client)
