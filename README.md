@@ -1,7 +1,19 @@
 linx-server 
 ======
 
-Self-hosted file/media sharing website.  
+A self-hosted file/media sharing website. Its primary use is for temporay file sharing and pastebin-like text sharing.  
+
+
+### Features
+
+- Display common filetypes (image, video, audio, markdown, pdf)  
+- Display syntax-highlighted code with in-place editing
+- Documented API with keys for restricting uploads
+- Torrent download of files using web seeding
+- File expiry, deletion key, file access key, and random filename options
+- File previews are now supported for sites like Twitter and Discord
+- Files are locked when uploading to prevent tampering
+
 
 ### Clients
 **Official**
@@ -12,16 +24,7 @@ Self-hosted file/media sharing website.
 - CLI: **golinx** - [Source](https://github.com/mutantmonkey/golinx)
 
 
-### Features
-
-- Display common filetypes (image, video, audio, markdown, pdf)  
-- Display syntax-highlighted code with in-place editing
-- Documented API with keys for restricting uploads
-- Torrent download of files using web seeding
-- File expiry, deletion key, file access key, and random filename options
-
-
-### Screenshots
+### Screenshots - OUT OF DATE
 <img width="730" src="https://user-images.githubusercontent.com/4650950/76579039-03c82680-6488-11ea-8e23-4c927386fbd9.png" />
 
 <img width="180" src="https://user-images.githubusercontent.com/4650950/76578903-771d6880-6487-11ea-8baf-a4a23fef4d26.png" /> <img width="180" src="https://user-images.githubusercontent.com/4650950/76578910-7be21c80-6487-11ea-9a0a-587d59bc5f80.png" /> <img width="180" src="https://user-images.githubusercontent.com/4650950/76578908-7b498600-6487-11ea-8994-ee7b6eb9cdb1.png" /> <img width="180" src="https://user-images.githubusercontent.com/4650950/76578907-7b498600-6487-11ea-8941-8f582bf87fb0.png" />
@@ -58,9 +61,18 @@ services:
       - "8080:8080"
     restart: unless-stopped
 ```
-Ideally, you would use a reverse proxy such as nginx or caddy to handle TLS certificates.
+Ideally, you would use a reverse proxy such as nginx or caddy to handle TLS certificates.  
 
-#### Using a binary release
+#### Manual build
+```
+go build
+```
+To run
+```
+./linx-server -config config
+```
+
+#### Using a binary release - NOT SUPPORTED CURRENTLY
 
 1. Grab the latest binary from the [releases](https://github.com/andreimarcu/linx-server/releases), then run ```go install```
 2. Run ```linx-server -config path/to/linx-server.conf```
