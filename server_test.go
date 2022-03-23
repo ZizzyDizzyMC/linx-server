@@ -33,6 +33,7 @@ func TestSetup(t *testing.T) {
 	Config.siteURL = "http://linx.example.org/"
 	Config.filesDir = path.Join(os.TempDir(), generateBarename())
 	Config.metaDir = Config.filesDir + "_meta"
+	Config.locksDir = Config.filesDir + "_locks"
 	Config.maxSize = 1024 * 1024 * 1024
 	Config.noLogs = true
 	Config.siteName = "linx"
@@ -1255,6 +1256,7 @@ func TestInferSiteURLHTTPSFastCGI(t *testing.T) {
 func TestShutdown(t *testing.T) {
 	os.RemoveAll(Config.filesDir)
 	os.RemoveAll(Config.metaDir)
+	os.RemoveAll(Config.locksDir)
 }
 
 func TestPutAndGetCLI(t *testing.T) {
