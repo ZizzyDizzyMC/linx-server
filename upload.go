@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"path"
@@ -228,9 +229,7 @@ func uploadRemote(c web.C, w http.ResponseWriter, r *http.Request) {
 
 func uploadHeaderProcess(r *http.Request, upReq *UploadRequest) {
 	if r.Header.Get("Linx-Randomize") == "yes" {
-		upReq.randomBarename = true	
-	} else {
-		upReq.randomBarename = false
+		upReq.randomBarename = true
 	}
 	upReq.deleteKey = r.Header.Get("Linx-Delete-Key")
 	upReq.accessKey = r.Header.Get(accessKeyHeaderName)
@@ -320,6 +319,13 @@ func processUpload(upReq UploadRequest) (upload Upload, err error) {
 		return upload, errors.New("Prohibited filename")
 	}
 
+	// Lock the upload
+	log.Printf("Lock %s", upload.Filename)
+	err = storageBackend.Lock(upload.Filename)
+	if err != nil {
+		return upload, err
+	}
+
 	// Get the rest of the metadata needed for storage
 	var fileExpiry time.Time
 	maxDurationTime := time.Duration(Config.maxDurationTime) * time.Second
@@ -343,7 +349,15 @@ func processUpload(upReq UploadRequest) (upload Upload, err error) {
 	if Config.disableAccessKey == true {
 		upReq.accessKey = ""
 	}
+	log.Printf("Write %s", upload.Filename)
 	upload.Metadata, err = storageBackend.Put(upload.Filename, io.MultiReader(bytes.NewReader(header), upReq.src), fileExpiry, upReq.deleteKey, upReq.accessKey, upReq.srcIp)
+	if err != nil {
+		return upload, err
+	}
+
+	// Unlock the upload
+	log.Printf("Unlock %s", upload.Filename)
+	err = storageBackend.Unlock(upload.Filename)
 	if err != nil {
 		return upload, err
 	}
