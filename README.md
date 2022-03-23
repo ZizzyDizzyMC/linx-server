@@ -67,7 +67,7 @@ Ideally, you would use a reverse proxy such as nginx or caddy to handle TLS cert
 ```
 go build
 ```
-To run
+Then run
 ```
 ./linx-server -config config
 ```
