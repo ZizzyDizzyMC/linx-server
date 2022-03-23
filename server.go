@@ -43,6 +43,7 @@ var Config struct {
 	bind                      string
 	filesDir                  string
 	metaDir                   string
+	locksDir                  string
 	siteName                  string
 	siteURL                   string
 	sitePath                  string
@@ -137,6 +138,11 @@ func setup() *web.Mux {
 		log.Fatal("Could not create metadata directory:", err)
 	}
 
+	err = os.MkdirAll(Config.locksDir, 0755)
+	if err != nil {
+		log.Fatal("Could not create locks directory:", err)
+	}
+
 	if Config.siteURL != "" {
 		// ensure siteURL ends wth '/'
 		if lastChar := Config.siteURL[len(Config.siteURL)-1:]; lastChar != "/" {
@@ -161,9 +167,9 @@ func setup() *web.Mux {
 	if Config.s3Bucket != "" {
 		storageBackend = s3.NewS3Backend(Config.s3Bucket, Config.s3Region, Config.s3Endpoint, Config.s3ForcePathStyle)
 	} else {
-		storageBackend = localfs.NewLocalfsBackend(Config.metaDir, Config.filesDir)
+		storageBackend = localfs.NewLocalfsBackend(Config.metaDir, Config.filesDir, Config.locksDir)
 		if Config.cleanupEveryMinutes > 0 {
-			go cleanup.PeriodicCleanup(time.Duration(Config.cleanupEveryMinutes)*time.Minute, Config.filesDir, Config.metaDir, Config.noLogs)
+			go cleanup.PeriodicCleanup(time.Duration(Config.cleanupEveryMinutes)*time.Minute, Config.filesDir, Config.metaDir, Config.locksDir, Config.noLogs)
 		}
 
 	}
@@ -249,6 +255,8 @@ func main() {
 		"path to files directory")
 	flag.StringVar(&Config.metaDir, "metapath", "meta/",
 		"path to metadata directory")
+	flag.StringVar(&Config.locksDir, "lockspath", "locks/",
+		"path to locks directory")
 	flag.BoolVar(&Config.basicAuth, "basicauth", false,
 		"allow logging by basic auth password")
 	flag.BoolVar(&Config.noLogs, "nologs", false,
