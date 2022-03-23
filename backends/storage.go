@@ -12,6 +12,9 @@ type StorageBackend interface {
 	Exists(key string) (bool, error)
 	Head(key string) (Metadata, error)
 	Get(key string) (Metadata, io.ReadCloser, error)
+	Lock(filename string) (error)
+	Unlock(filename string) (error)
+	CheckLock(filename string) (bool, error)
 	Put(key string, r io.Reader, expiry time.Time, deleteKey, accessKey string, srcIp string) (Metadata, error)
 	PutMetadata(key string, m Metadata) error
 	ServeFile(key string, w http.ResponseWriter, r *http.Request) error
