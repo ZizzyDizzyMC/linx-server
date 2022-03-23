@@ -3,6 +3,7 @@ package s3
 import (
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -153,6 +154,21 @@ func unmapMetadata(input map[string]*string) (m backends.Metadata, err error) {
 		m.AccessKey = aws.StringValue(key)
 	}
 
+	return
+}
+
+func (b S3Backend) Lock(filename string) (err error) {
+	log.Printf("Locking is not supported on S3")
+	return
+}
+
+func (b S3Backend) Unlock(filename string) (err error) {
+	log.Printf("Locking is not supported on S3")
+	return
+}
+
+func (b S3Backend) CheckLock(filename string) (locked bool, err error) {
+	log.Printf("Locking is not supported on S3")
 	return
 }
 
