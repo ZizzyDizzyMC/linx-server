@@ -228,7 +228,9 @@ func uploadRemote(c web.C, w http.ResponseWriter, r *http.Request) {
 
 func uploadHeaderProcess(r *http.Request, upReq *UploadRequest) {
 	if r.Header.Get("Linx-Randomize") == "yes" {
-		upReq.randomBarename = true
+		upReq.randomBarename = true	
+	} else {
+		upReq.randomBarename = false
 	}
 	upReq.deleteKey = r.Header.Get("Linx-Delete-Key")
 	upReq.accessKey = r.Header.Get(accessKeyHeaderName)
