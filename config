@@ -1,0 +1,9 @@
+bind = 127.0.0.1:4284
+sitename = Linx File Sharing
+maxsize = 4294967296
+maxexpiry = 2628000
+allowhotlink = true
+#refererpolicy = no-referrer
+filereferrerpolicy = no-referrer
+xframeoptions = DENY
+cleanup-every-minutes = 1
