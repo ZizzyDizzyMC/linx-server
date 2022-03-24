@@ -256,7 +256,7 @@ func main() {
 	flag.StringVar(&Config.metaDir, "metapath", "meta/",
 		"path to metadata directory")
 	flag.StringVar(&Config.locksDir, "lockspath", "locks/",
-		"path to metadata directory")
+		"path to locks directory")
 	flag.BoolVar(&Config.basicAuth, "basicauth", false,
 		"allow logging by basic auth password")
 	flag.BoolVar(&Config.noLogs, "nologs", false,
