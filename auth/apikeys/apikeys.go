@@ -77,7 +77,7 @@ func CheckAuth(authKeys []string, key string) (result bool, err error) {
 
 func (a ApiKeysMiddleware) getSitePrefix() string {
 	prefix := a.o.SitePath
-	if len(prefix) <= 0 || prefix[0] != '/' {
+	if len(prefix) > 1 && redir[0] == '/' && redir[1] != '/' && redir[1] != '\\' {
 		prefix = "/" + prefix
 	}
 	return prefix
