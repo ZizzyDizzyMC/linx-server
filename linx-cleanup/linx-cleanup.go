@@ -16,8 +16,8 @@ func main() {
 		"path to files directory")
 	flag.StringVar(&metaDir, "metapath", "meta/",
 		"path to metadata directory")
-	flag.StringVar(&locksDir, "lockspath", "locks/",
-		"path to locks directory")
+	flag.StringVar(&metaDir, "lockspath", "locks/",
+		"path to metadata directory")
 	flag.BoolVar(&noLogs, "nologs", false,
 		"don't log deleted files")
 	flag.Parse()
