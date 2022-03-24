@@ -22,5 +22,5 @@ func main() {
 		"don't log deleted files")
 	flag.Parse()
 
-	cleanup.Cleanup(filesDir, metaDir, locksDir, noLogs)
+	cleanup.Cleanup(filesDir, metaDir, noLogs)
 }
