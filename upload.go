@@ -230,6 +230,8 @@ func uploadRemote(c web.C, w http.ResponseWriter, r *http.Request) {
 func uploadHeaderProcess(r *http.Request, upReq *UploadRequest) {
 	if r.Header.Get("Linx-Randomize") == "yes" {
 		upReq.randomBarename = true
+	} else {
+		upReq.randomBarename = false
 	}
 	upReq.deleteKey = r.Header.Get("Linx-Delete-Key")
 	upReq.accessKey = r.Header.Get(accessKeyHeaderName)
@@ -421,11 +423,11 @@ func barePlusExt(filename string) (barename, extension string) {
 
 func parseExpiry(expStr string) time.Duration {
 	if expStr == "" {
-		return time.Duration(Config.maxExpiry) * time.Second
+		return time.Duration(Config.defaultExpiry) * time.Second
 	} else {
 		fileExpiry, err := strconv.ParseUint(expStr, 10, 64)
 		if err != nil {
-			return time.Duration(Config.maxExpiry) * time.Second
+			return time.Duration(Config.defaultExpiry) * time.Second
 		} else {
 			if Config.maxExpiry > 0 && (fileExpiry > Config.maxExpiry || fileExpiry == 0) {
 				fileExpiry = Config.maxExpiry
