@@ -57,6 +57,7 @@ var Config struct {
 	xFrameOptions             string
 	maxSize                   int64
 	maxExpiry                 uint64
+	defaultExpiry             uint64
 	realIp                    bool
 	noLogs                    bool
 	allowHotlink              bool
@@ -272,6 +273,8 @@ func main() {
 		"maximum upload file size in bytes (default 4GB)")
 	flag.Uint64Var(&Config.maxExpiry, "maxexpiry", 0,
 		"maximum expiration time in seconds (default is 0, which is no expiry)")
+	flag.Uint64Var(&Config.defaultExpiry, "default-expiry", 86400,
+		"default expiration time in seconds (default is 86400, which is 1 day)")
 	flag.StringVar(&Config.certFile, "certfile", "",
 		"path to ssl certificate (for https)")
 	flag.StringVar(&Config.keyFile, "keyfile", "",
