@@ -6,3 +6,4 @@ allowhotlink = true
 filereferrerpolicy = no-referrer
 xframeoptions = DENY
 cleanup-every-minutes = 0
+nologs = true
