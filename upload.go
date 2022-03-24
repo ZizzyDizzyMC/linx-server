@@ -421,11 +421,11 @@ func barePlusExt(filename string) (barename, extension string) {
 
 func parseExpiry(expStr string) time.Duration {
 	if expStr == "" {
-		return time.Duration(Config.defaultExpiry) * time.Second
+		return time.Duration(Config.maxExpiry) * time.Second
 	} else {
 		fileExpiry, err := strconv.ParseUint(expStr, 10, 64)
 		if err != nil {
-			return time.Duration(Config.defaultExpiry) * time.Second
+			return time.Duration(Config.maxExpiry) * time.Second
 		} else {
 			if Config.maxExpiry > 0 && (fileExpiry > Config.maxExpiry || fileExpiry == 0) {
 				fileExpiry = Config.maxExpiry
