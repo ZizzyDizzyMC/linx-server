@@ -1,26 +1,53 @@
-package main
+package cleanup
 
 import (
-	"flag"
+	"log"
+	"time"
 
-	"github.com/andreimarcu/linx-server/cleanup"
+	"github.com/andreimarcu/linx-server/backends/localfs"
+	"github.com/andreimarcu/linx-server/expiry"
 )
 
-func main() {
-	var filesDir string
-	var metaDir string
-	var locksDir string
-	var noLogs bool
+func Cleanup(filesDir string, metaDir string, locksDir string, noLogs bool) {
+	fileBackend := localfs.NewLocalfsBackend(metaDir, filesDir, locksDir)
 
-	flag.StringVar(&filesDir, "filespath", "files/",
-		"path to files directory")
-	flag.StringVar(&metaDir, "metapath", "meta/",
-		"path to metadata directory")
-	flag.StringVar(&metaDir, "lockspath", "locks/",
-		"path to metadata directory")
-	flag.BoolVar(&noLogs, "nologs", false,
-		"don't log deleted files")
-	flag.Parse()
+	files, err := fileBackend.List()
+	if err != nil {
+		panic(err)
+	}
 
-	cleanup.Cleanup(filesDir, metaDir, noLogs)
+	for _, filename := range files {
+		locked, err := fileBackend.CheckLock(filename)
+		if err != nil {
+			log.Printf("Error checking if %s is locked: %s", filename, err)
+		}
+		if locked {
+			log.Printf("%s is locked, it will be ignored", filename)
+			continue
+		}
+
+		metadata, err := fileBackend.Head(filename)
+		if err != nil {
+			if !noLogs {
+				log.Printf("Failed to find metadata for %s", filename)
+			}
+		}
+
+		if expiry.IsTsExpired(metadata.Expiry) {
+			if !noLogs {
+				log.Printf("Delete %s", filename)
+			}
+			fileBackend.Delete(filename)
+		}
+	}
+}
+
+func PeriodicCleanup(minutes time.Duration, filesDir string, metaDir string, locksDir string, noLogs bool) {
+	c := time.Tick(minutes)
+	for range c {
+		log.Printf("Running periodic cleanup")
+		Cleanup(filesDir, metaDir, locksDir, noLogs)
+		log.Printf("Finished periodic cleanup")
+	}
+
 }
