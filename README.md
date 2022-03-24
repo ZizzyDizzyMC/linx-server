@@ -155,7 +155,7 @@ The following storage backends are available:
 | ```keyfile = path/to/your.key``` | Path to the ssl key (required if you want to use the https server)
 
 #### Use with http proxy 
-|Option|Description
+|Option|Descriptionhttps://github.com/BBaoVanC
 |------|-----------
 | ```realip = true``` | let linx-server know you (nginx, etc) are providing the X-Real-IP and/or X-Forwarded-For headers.
 
@@ -203,6 +203,11 @@ The official IRC channel is #linx on irc.oftc.net
 1. ```go get -u github.com/andreimarcu/linx-server ```
 2. ```cd $GOPATH/src/github.com/andreimarcu/linx-server ```
 3. ```go build && ./linx-server```
+
+Credits
+----------
+https://github.com/BBaoVanC  
+https://github.com/xtrafrancyz  
 
 
 License
