@@ -2,7 +2,6 @@ package localfs
 
 import (
 	"encoding/json"
-	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -150,18 +149,6 @@ func (b LocalfsBackend) Unlock(filename string) (err error) {
 	}
 
 	return
-}
-
-func (b LocalfsBackend) CheckLock(filename string) (locked bool, err error) {
-	lockPath := path.Join(b.locksPath, filename)
-
-	if _, err := os.Stat(lockPath); errors.Is(err, os.ErrNotExist) {
-		return false, nil
-	} else {
-		return true, nil
-	}
-
-	return false, err
 }
 
 func (b LocalfsBackend) Put(key string, r io.Reader, expiry time.Time, deleteKey, accessKey string, srcIp string) (m backends.Metadata, err error) {
