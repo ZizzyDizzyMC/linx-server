@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
-{% block head %}
+{% block opengraph %}
+<meta property="og:title" content="{{ filename }} ({{ size }})" />
 <meta property="og:type" content="video.other">
+<meta property="og:url" content="{{ siteurl }}{{ sitepath }}{{ filename }}" />
 <meta property="og:video" content="{{ siteurl }}{{ sitepath }}{{ selifpath }}{{ filename }}" />
 {% endblock %}
+
+{% block twittercard %}{% endblock %}
 
 {% block main %}
 <video class="display-video" controls autoplay>
