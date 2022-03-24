@@ -57,7 +57,6 @@ var Config struct {
 	xFrameOptions             string
 	maxSize                   int64
 	maxExpiry                 uint64
-	defaultExpiry             uint64
 	realIp                    bool
 	noLogs                    bool
 	allowHotlink              bool
@@ -138,7 +137,7 @@ func setup() *web.Mux {
 		log.Fatal("Could not create metadata directory:", err)
 	}
 
-	err = os.MkdirAll(Config.locksDir, 0755)
+	err = os.MkdirAll(Config.locksDir, 0700)
 	if err != nil {
 		log.Fatal("Could not create locks directory:", err)
 	}
@@ -256,7 +255,7 @@ func main() {
 	flag.StringVar(&Config.metaDir, "metapath", "meta/",
 		"path to metadata directory")
 	flag.StringVar(&Config.locksDir, "lockspath", "locks/",
-		"path to locks directory")
+		"path to metadata directory")
 	flag.BoolVar(&Config.basicAuth, "basicauth", false,
 		"allow logging by basic auth password")
 	flag.BoolVar(&Config.noLogs, "nologs", false,
@@ -273,8 +272,6 @@ func main() {
 		"maximum upload file size in bytes (default 4GB)")
 	flag.Uint64Var(&Config.maxExpiry, "maxexpiry", 0,
 		"maximum expiration time in seconds (default is 0, which is no expiry)")
-	flag.Uint64Var(&Config.defaultExpiry, "default-expiry", 86400,
-		"default expiration time in seconds (default is 86400, which is 1 day)")
 	flag.StringVar(&Config.certFile, "certfile", "",
 		"path to ssl certificate (for https)")
 	flag.StringVar(&Config.keyFile, "keyfile", "",
