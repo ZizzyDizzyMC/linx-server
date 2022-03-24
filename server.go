@@ -138,7 +138,7 @@ func setup() *web.Mux {
 		log.Fatal("Could not create metadata directory:", err)
 	}
 
-	err = os.MkdirAll(Config.locksDir, 0700)
+	err = os.MkdirAll(Config.locksDir, 0755)
 	if err != nil {
 		log.Fatal("Could not create locks directory:", err)
 	}
