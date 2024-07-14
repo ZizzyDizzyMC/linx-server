@@ -1,5 +1,16 @@
 {% extends "../base.html" %}
 
+{% block opengraph %}
+<meta property="og:title" content="{{ filename }} ({{ size }})" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ siteurl }}{{ sitepath }}{{ filename }}" />
+{% endblock %}
+
+{% block twittercard %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{{ filename }} ({{ size }})" />
+{% endblock %}
+
 {% block title %}{{sitename}} - {{ filename }}{% endblock %}
 
 {% block bodymore %}{% endblock %}

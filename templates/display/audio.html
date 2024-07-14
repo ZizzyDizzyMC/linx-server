@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
-{% block head %}
+{% block opengraph %}
+<meta property="og:title" content="{{ filename }} ({{ size }})" />
+<meta property="og:type" content="music:song" />
+<meta property="og:url" content="{{ siteurl }}{{ sitepath }}{{ filename }}" />
 <meta property="og:audio" content="{{ siteurl }}{{ sitepath }}{{ selifpath }}{{ filename }}" />
 <meta property="og:audio:secure_url" content="{{ siteurl }}{{ sitepath }}{{ selifpath }}{{ filename }}" />
+<meta property="og:audio:type" content="{{ mime }}" />
 {% endblock %}
 
 {% block main %}
