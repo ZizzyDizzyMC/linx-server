@@ -51,6 +51,14 @@ type Upload struct {
 	Metadata backends.Metadata
 }
 
+// PushoverMessage represents the structure of the message to send
+type PushoverMessage struct {
+	Token   string `json:"token"`
+	User    string `json:"user"`
+	Message string `json:"message"`
+	Title   string `json:"title,omitempty"`
+}
+
 func uploadPostHandler(c web.C, w http.ResponseWriter, r *http.Request) {
 	if !strictReferrerCheck(r, getSiteURL(r), []string{"Linx-Delete-Key", "Linx-Expiry", "Linx-Randomize", "X-Requested-With"}) {
 		badRequestHandler(c, w, r, RespAUTO, "")
@@ -364,6 +372,13 @@ func processUpload(upReq UploadRequest) (upload Upload, err error) {
 		return upload, err
 	}
 
+	title := "New linx-server file."
+	message := fmt.Sprintf("File %s was just uploaded to linx-server. %s%s", upload.Filename, Config.siteURL, upload.Filename)
+	err = SendPushoverMessage(Config.pushOverToken, Config.pushOverKey, message, title)
+	if err != nil {
+		return upload, err
+	}
+
 	return
 }
 
@@ -419,6 +434,38 @@ func barePlusExt(filename string) (barename, extension string) {
 	barename = strings.Trim(barename, "-")
 
 	return
+}
+
+// SendPushoverMessage sends a push notification using the Pushover API
+func SendPushoverMessage(appToken, userKey, message, title string) error {
+	// Create the message struct
+	msg := PushoverMessage{
+		Token:   appToken,
+		User:    userKey,
+		Message: message,
+		Title:   title,
+	}
+
+	// Encode the message into JSON
+	jsonData, err := json.Marshal(msg)
+	if err != nil {
+		return fmt.Errorf("failed to marshal JSON: %w", err)
+	}
+
+	// Send the request
+	resp, err := http.Post("https://api.pushover.net/1/messages.json", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response status
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("received non-OK response: %d", resp.StatusCode)
+	}
+
+	fmt.Println("Message sent successfully")
+	return nil
 }
 
 func parseExpiry(expStr string) time.Duration {
