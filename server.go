@@ -81,6 +81,7 @@ var Config struct {
 	maxDurationSize           int64
 	disableAccessKey          bool
 	defaultRandomFilename     bool
+	strictSiteUrl             bool
 }
 
 var Templates = make(map[string]*pongo2.Template)
@@ -328,6 +329,7 @@ func main() {
 	flag.Int64Var(&Config.maxDurationSize, "max-duration-size", 4*1024*1024*1024, "Size of file before max-duration-time is used to determine expiry max time. (Default is 4GB)")
 	flag.BoolVar(&Config.disableAccessKey, "disable-access-key", false, "Disables access key usage. (Default is false.)")
 	flag.BoolVar(&Config.defaultRandomFilename, "default-random-filename", true, "Makes it so the random filename is not default if set false. (Default is true.)")
+	flag.BoolVar(&Config.strictSiteUrl, "strict-site-url", true, "Enforces strict site URL format for CSRF protection (default is true)")
 	iniflags.Parse()
 
 	mux := setup()

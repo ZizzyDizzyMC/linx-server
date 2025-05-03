@@ -1,94 +1,89 @@
-linx-server 
-======
+# linx-server
 
 Self-hosted file/media sharing website.  
 
-### Is this still active?
+## Is this still active?
 
 Yes, though the repo may be old, it's still active and I'll try and fix any major issues that occur with my limited time.
 
-### Demo
-You can see what it looks like using the demo: [https://put.icu/](https://put.icu/)
+## Demo
 
+You can see what it looks like using the demo: [https://put.icu/](https://put.icu/). _(IMPORTANT NOTICE: this demo isn't mine, and it's not running the latest updates of this repo)_
 
-### Clients
-**Official**
+## Clients
+
+### Official
+
 - CLI: **linx-client** - [Source](https://github.com/andreimarcu/linx-client)
 
-**Unofficial**
+### Unofficial
+
 - Android: **LinxShare** - [Source](https://github.com/iksteen/LinxShare/) | [Google Play](https://play.google.com/store/apps/details?id=org.thegraveyard.linxshare)
 - CLI: **golinx** - [Source](https://github.com/mutantmonkey/golinx)
 
+## Features
 
-### Features
+- Display common filetypes (image, video, audio, markdown, pdf).
+- Display syntax-highlighted code with in-place editing.
+- Documented API with keys for restricting uploads.
+- Torrent download of files using web seeding.
+- File expiry, deletion key, file access key, and random filename options.
 
-- Display common filetypes (image, video, audio, markdown, pdf)  
-- Display syntax-highlighted code with in-place editing
-- Documented API with keys for restricting uploads
-- Torrent download of files using web seeding
-- File expiry, deletion key, file access key, and random filename options
+## Screenshots
 
-
-### Screenshots
 <img width="730" src="https://user-images.githubusercontent.com/4650950/76579039-03c82680-6488-11ea-8e23-4c927386fbd9.png" />
 
 <img width="180" src="https://user-images.githubusercontent.com/4650950/76578903-771d6880-6487-11ea-8baf-a4a23fef4d26.png" /> <img width="180" src="https://user-images.githubusercontent.com/4650950/76578910-7be21c80-6487-11ea-9a0a-587d59bc5f80.png" /> <img width="180" src="https://user-images.githubusercontent.com/4650950/76578908-7b498600-6487-11ea-8994-ee7b6eb9cdb1.png" /> <img width="180" src="https://user-images.githubusercontent.com/4650950/76578907-7b498600-6487-11ea-8941-8f582bf87fb0.png" />
 
+## Getting started
 
-Getting started
--------------------
+### Using Docker or Docker Compose
 
-#### Using Docker
-1. Create directories ```files``` and ```meta``` and run ```chown -R 65534:65534 meta && chown -R 65534:65534 files``` 
-2. Create a config file (example provided in repo), we'll refer to it as __linx-server.conf__ in the following examples
+1. Create a directory named `_data` and change its ownership `chown -R 65534:65534 _data` (`65534` is the `nobody` user & group).
+2. Create a config file named `linx-server.conf` (check [linx-server.conf.example](linx-server.conf.example)) inside that `_data` directory.
 
+#### Docker
 
-
-Example running
+```sh
+docker run -p 8080:8080 -v ./_data/linx-server.conf:/data/linx-server.conf -v ./_data/meta:/data/meta -v ./_data/files:/data/files -v ./_data/custom_pages:/data/custom_pages ghcr.io/m-primo/linx-server:latest -config /data/linx-server.conf
 ```
-docker run -p 8080:8080 -v /path/to/linx-server.conf:/data/linx-server.conf -v /path/to/meta:/data/meta -v /path/to/files:/data/files andreimarcu/linx-server -config /data/linx-server.conf
-``` 
 
-Example with docker-compose 
+#### Docker Compose
+
+Check [compose.yml](compose.yml), update it and remove this block:
+
+```yml
+build:
+  context: .
 ```
-version: '2.2'
-services:
-  linx-server:
-    container_name: linx-server
-    image: andreimarcu/linx-server
-    command: -config /data/linx-server.conf
-    volumes:
-      - /path/to/files:/data/files
-      - /path/to/meta:/data/meta
-      - /path/to/linx-server.conf:/data/linx-server.conf
-    network_mode: bridge
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
-```
-Ideally, you would use a reverse proxy such as nginx or caddy to handle TLS certificates.
 
-#### Using a binary release
+Then change the `image` value from `m-primo/linx-server:latest` to `ghcr.io/m-primo/linx-server:latest`.
 
-1. Grab the latest binary from the [releases](https://github.com/andreimarcu/linx-server/releases), then run ```go install```
-2. Run ```linx-server -config path/to/linx-server.conf```
+### Using a binary release
 
-  
-Usage
------
+1. Download the latest binary from the [releases](https://github.com/m-primo/linx-server/releases).
+2. Extract the archive `tar -xvzf linx-server.tar.gz`.
+3. Run ```linx.sh -config /path/to/linx-server.conf```.
 
-#### Configuration
+Ideally, you would use a reverse proxy such as Nginx, Caddy, or Apache to handle TLS certificates and act as a high performance web server.
+
+## Usage
+
+### Configuration
+
 All configuration options are accepted either as arguments or can be placed in a file as such (see example file linx-server.conf.example in repo):  
+
 ```ini
 bind = 127.0.0.1:8080
 sitename = myLinx
 maxsize = 4294967296
 maxexpiry = 86400
 # ... etc
-``` 
-...and then run ```linx-server -config path/to/linx-server.conf```    
+```
 
-#### Options
+...and then run ```linx-server -config path/to/linx-server.conf```
+
+### Options
 
 |Option|Description
 |------|-----------
@@ -113,17 +108,16 @@ maxexpiry = 86400
 | ```max-duration-size = 4294967296``` | Size of file before max-duration-time is used to determine expiry max time. (Default is 4GB)
 | ```disable-access-key = true``` | Disables access key usage. (Default is false.)
 | ```default-random-filename = true``` | Makes it so the random filename is not default if set false. (Default is true.)
-
+| ```strict-site-url = true``` | Enforces strict site URL format for CSRF protection. (Default is true.) - Useful if you access the website on multiple domains and IPs.
 
 #### Cleaning up expired files
+
 When files expire, access is disabled immediately, but the files and metadata
 will persist on disk until someone attempts to access them. You can set the following option to run cleanup every few minutes. This can also be done using a separate utility found the linx-cleanup directory.
-
 
 |Option|Description
 |------|-----------
 | ```cleanup-every-minutes = 5``` | How often to clean up expired files in minutes (default is 0, which means files will be cleaned up as they are accessed)
-
 
 #### Require API Keys for uploads
 
@@ -136,6 +130,7 @@ will persist on disk until someone attempts to access them. You can set the foll
 A helper utility ```linx-genkey``` is provided which hashes keys to the format required in the auth files.
 
 #### Storage backends
+
 The following storage backends are available:
 
 |Name|Notes|Options
@@ -143,66 +138,90 @@ The following storage backends are available:
 |LocalFS|Enabled by default, this backend uses the filesystem|```filespath = files/``` -- Path to store uploads (default is files/)<br />```metapath = meta/``` -- Path to store information about uploads (default is meta/)|
 |S3|Use with any S3-compatible provider.<br> This implementation will stream files through the linx instance (every download will request and stream the file from the S3 bucket). File metadata will be stored as tags on the object in the bucket.<br><br>For high-traffic environments, one might consider using an external caching layer such as described [in this article](https://blog.sentry.io/2017/03/01/dodging-s3-downtime-with-nginx-and-haproxy.html).|```s3-endpoint = https://...``` -- S3 endpoint<br>```s3-region = us-east-1``` -- S3 region<br>```s3-bucket = mybucket``` -- S3 bucket to use for files and metadata<br>```s3-force-path-style = true``` (optional) -- force path-style addresing (e.g. https://<span></span>s3.amazonaws.com/linx/example.txt)<br><br>Environment variables to provide:<br>```AWS_ACCESS_KEY_ID``` -- the S3 access key<br>```AWS_SECRET_ACCESS_KEY ``` -- the S3 secret key<br>```AWS_SESSION_TOKEN``` (optional) -- the S3 session token|
 
+#### SSL with built-in server
 
-#### SSL with built-in server 
 |Option|Description
 |------|-----------
 | ```certfile = path/to/your.crt``` | Path to the ssl certificate (required if you want to use the https server)
 | ```keyfile = path/to/your.key``` | Path to the ssl key (required if you want to use the https server)
 
-#### Use with http proxy 
+#### Use with http proxy
+
 |Option|Description
 |------|-----------
 | ```realip = true``` | let linx-server know you (nginx, etc) are providing the X-Real-IP and/or X-Forwarded-For headers.
 
 #### Use with fastcgi
+
 |Option|Description
 |------|-----------
 | ```fastcgi = true``` | serve through fastcgi 
 
-Deployment
-----------
+## Deployment
+
 Linx-server supports being deployed in a subdirectory (ie. example.com/mylinx/) as well as on its own (example.com/).
 
-
-#### 1. Using fastcgi
+### 1. Using fastcgi
 
 A suggested deployment is running nginx in front of linx-server serving through fastcgi.
 This allows you to have nginx handle the TLS termination for example.  
 An example configuration:
-```
+
+```nginx
 server {
-    ...
-    server_name yourlinx.example.org;
-    ...
-    
-    client_max_body_size 4096M;
-    location / {
-        fastcgi_pass 127.0.0.1:8080;
-        include fastcgi_params;
-    }
+  ...
+  server_name yourlinx.example.org;
+  ...
+  client_max_body_size 4096M;
+  location / {
+    fastcgi_pass 127.0.0.1:8080;
+    include fastcgi_params;
+  }
 }
 ```
-And run linx-server with the ```fastcgi = true``` option.
 
-#### 2. Using the built-in https server
-Run linx-server with the ```certfile = path/to/cert.file``` and ```keyfile = path/to/key.file``` options.
+And run linx-server with the `fastcgi = true` option.
 
-#### 3. Using the built-in http server
+### 2. Using the built-in https server
+
+Run linx-server with the `certfile = path/to/cert.file` and `keyfile = path/to/key.file` options.
+
+### 3. Using the built-in http server
+
 Run linx-server normally.
 
-Development
------------
-Any help is welcome, PRs will be reviewed and merged accordingly.  
-The official IRC channel is #linx on irc.oftc.net  
+## Development
 
-1. ```go get -u github.com/andreimarcu/linx-server ```
-2. ```cd $GOPATH/src/github.com/andreimarcu/linx-server ```
-3. ```go build && ./linx-server```
+Any help is welcome, PRs will be reviewed and merged accordingly.
 
+```sh
+git pull https://github.com/m-primo/linx-server.git
+cp -r linx-server /go/src/github.com/andreimarcu/
+cd /go/src/github.com/andreimarcu/linx-server/
+go mod download
+go build -o /go/bin/linx-server .
+cp /go/bin/linx-server /usr/local/bin/linx-server
+mkdir -p /data/files && mkdir -p /data/meta && mkdir -p /data/locks && mkdir -p /data/custom_pages && chown -R 65534:65534 /data
+```
 
-License
--------
+(You might want to adjust a command or two)
+
+or using Docker.
+
+```sh
+git pull https://github.com/m-primo/linx-server.git
+docker compose build --no-cache
+docker compose up -d
+```
+
+It's better to use Docker Compose for both development and deployment, since this is my method of contributing to this project.
+
+## Upstream Project
+
+[ZizzyDizzyMC/linx-server](https://github.com/ZizzyDizzyMC/linx-server)
+
+## Original License
+
 Copyright (C) 2015 Andrei Marcu
 
 This program is free software: you can redistribute it and/or modify
@@ -218,6 +237,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-Author
--------
-Andrei Marcu, https://andreim.net/
+## Original Author
+
+Andrei Marcu, <https://andreim.net/>

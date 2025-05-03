@@ -9,4 +9,5 @@ allowhotlink = true
 remoteuploads = true
 nologs = true
 force-random-filename = false
+strict-site-url = false
 cleanup-every-minutes = 5

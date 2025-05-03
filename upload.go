@@ -52,8 +52,8 @@ type Upload struct {
 }
 
 func uploadPostHandler(c web.C, w http.ResponseWriter, r *http.Request) {
-	if !strictReferrerCheck(r, getSiteURL(r), []string{"Linx-Delete-Key", "Linx-Expiry", "Linx-Randomize", "X-Requested-With"}) {
-		badRequestHandler(c, w, r, RespAUTO, "")
+	if Config.strictSiteUrl && !strictReferrerCheck(r, getSiteURL(r), []string{"Linx-Delete-Key", "Linx-Expiry", "Linx-Randomize", "X-Requested-With"}) {
+		badRequestHandler(c, w, r, RespAUTO, "CSRF mismatch")
 		return
 	}
 

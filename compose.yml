@@ -1,0 +1,16 @@
+services:
+  linx-server:
+    container_name: linx-server
+    build:
+      context: .
+    image: m-primo/linx-server:latest
+    restart: unless-stopped
+    command: -config /data/linx-server.conf
+    volumes:
+      - './_data/files:/data/files/'
+      - './_data/meta:/data/meta/'
+      - './_data/custom_pages/:/data/custom_pages/'
+      - './_data/linx.conf:/data/linx-server.conf'
+      - './_data/authfile:/data/authfile'
+    ports:
+      - '8080:8080'
